@@ -1,0 +1,40 @@
+{
+    "summary": {
+        "total_emails": 2,
+        "total_credentials": 13,
+        "total_ips": 10,
+        "total_domains": 16,
+        "total_credit_cards": 8
+    },
+    "threats": {
+        "twcd7f2vgydn5bxtu2gx4432ymzxws22n2q55txmmz664ydfcl4p7hyd.onion": "T1566",
+        "tutamail.com": "T1566",
+        "hackrzw3luyvtorg7t2vo3os3a6rqu3cay5woltixs25uj3b7yqzpnyd.onion": "T1566",
+        "gmail.com": "T1566",
+        "Deepweb.net": "T1566",
+        "Kevin.SEC": "T1566",
+        "SecTor.City": "T1566",
+        "Riseup.net": "T1566"
+    },
+    "leaks": {
+        "emails": [
+            "AnonymousHackers@tutamail.com",
+            "thepoisonpantry@gmail.com"
+        ],
+        "credentials": [],
+        "ip_addresses": [],
+        "domains": [
+            "twcd7f2vgydn5bxtu2gx4432ymzxws22n2q55txmmz664ydfcl4p7hyd.onion",
+            "tutamail.com",
+            "hackrzw3luyvtorg7t2vo3os3a6rqu3cay5woltixs25uj3b7yqzpnyd.onion",
+            "invaevctcgzog77675r5emv5bdfo4alk37ovyq4ypcynzswmcc7sedad.onion",
+            "ss7hinj3hz4h2urtymolsgmjj4xfhrwit6ofetyk6rs6fqnr5qqfbmqd.onion",
+            "gmail.com",
+            "Deepweb.net",
+            "Kevin.SEC",
+            "SecTor.City",
+            "Riseup.net"
+        ],
+        "credit_cards": []
+    }
+}
