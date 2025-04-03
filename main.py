@@ -7,7 +7,7 @@ from mitre_mapping.mitre_mapper import classify_threats
 from mitre_mapping.report_generator import generate_report
 
 # Define target .onion URL
-TARGET_URL = "TARGET_ONION_LINK"
+TARGET_URL = "http://aniozgjggq2pzxznogrlpoioks7iu3emj6bwebz3yptl4pkoukzd6kid.onion/"
 
 def main():
     print("\n🚀 Starting Dark Web Threat Analysis...")

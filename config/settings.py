@@ -5,10 +5,10 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
 # 🚀 TOR Configuration
-TOR_PASSWORD = os.getenv("TOR_PASSWORD")
+TOR_PASSWORD = os.getenv("hashed@02")
 
 # 🔍 VirusTotal API Key (for IOC validation)
-VIRUSTOTAL_API_KEY = os.getenv("VIRUSTOTAL_API_KEY")
+VIRUSTOTAL_API_KEY = os.getenv("0a3113ea071cab5b574e9901d7588bfdeda15449d69e856bbf964b4907d9c7de")
 
 # 💾 MongoDB Connection Settings
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")

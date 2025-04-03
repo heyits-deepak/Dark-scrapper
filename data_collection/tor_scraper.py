@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 # Load environment variables from `.env`
 load_dotenv()
-TOR_PASSWORD = os.getenv("Your_pass")
+TOR_PASSWORD = os.getenv("hashed@02")
 
 # Function to rotate TOR IP
 def renew_connection():
