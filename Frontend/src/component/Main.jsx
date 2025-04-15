@@ -13,8 +13,10 @@ const Main = ({searchVal, setSearchVal, handleKeyDown, moveInput, data, refresh}
       />
 
       <div className="z-40 w-full h-full flex flex-col justify-center items-center p-2 mb-[2vh] mt-[10vh] md:my-0 md:mt-[3vh] overflow-hidden">
-        <Dashboard data={data} moveInput={moveInput}/>
+        {data && <>
+          <Dashboard data={data} moveInput={moveInput}/>
         <Visualization data={data} moveInput={moveInput}/>
+        </>}
       </div>
     </div>
   );

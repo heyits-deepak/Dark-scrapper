@@ -13,11 +13,11 @@ const Dashboard = ({ data, moveInput }) => {
     if (!moveInput) return;
 
     const targetCounts = {
-      emails: data.summary.total_emails,
-      credentials: data.summary.total_credentials,
-      ips: data.summary.total_ips,
-      domains: data.summary.total_domains,
-      creditCards: data.summary.total_credit_cards,
+      emails: data?.summary?.total_emails,
+      credentials: data?.summary?.total_credentials,
+      ips: data?.summary?.total_ips,
+      domains: data?.summary?.total_domains,
+      creditCards: data?.summary?.total_credit_cards,
     };
 
     // Reset counts to zero before starting animation
