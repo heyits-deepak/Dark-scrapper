@@ -1,62 +1,78 @@
-import os
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import json
 from data_collection.tor_scraper import scrape
 from data_collection.bs4_parser import extract_leaks_from_html
 from ioc_extraction.ioc_validator import check_virustotal
+from ioc_extraction.ioc_enricher import enrich_ioc
 from mitre_mapping.mitre_mapper import classify_threats
 from mitre_mapping.report_generator import generate_report
 
-# Define target .onion URL
-TARGET_URL = "http://aniozgjggq2pzxznogrlpoioks7iu3emj6bwebz3yptl4pkoukzd6kid.onion/"
+app = FastAPI()
 
-def main():
-    print("\n🚀 Starting Dark Web Threat Analysis...")
+# CORS settings
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    # Step 1: Scrape the Dark Web Page
-    print("\n🔍 Scraping website...")
-    soup = scrape(TARGET_URL)
-    if not soup:
-        print("[ERROR] Scraping failed. Exiting.")
-        return
-    
-    with open("scraped_page.html", "w", encoding="utf-8") as file:
-        file.write(str(soup))
-    print("[INFO] HTML content saved for analysis.")
+class OnionURL(BaseModel):
+    link: str
 
-    # Step 2: Extract Leaked Data
-    print("\n📊 Extracting leaked data from HTML...")
-    extracted_data = extract_leaks_from_html("scraped_page.html")
+@app.post("/search")
+async def analyze_onion(onion: OnionURL):
+    try:
+        target_url = onion.link.strip()
 
-    with open("extracted_leaks.json", "w", encoding="utf-8") as json_file:
-        json.dump(extracted_data, json_file, indent=4)
-    print("[INFO] Extracted leaks saved.")
+        # Step 1: Scrape Onion Page
+        soup = scrape(target_url)
+        if not soup:
+            raise HTTPException(status_code=500, detail="Scraping failed or returned no data.")
 
-    # Step 3: Validate IOCs against VirusTotal
-    print("\n🔎 Validating IOCs with VirusTotal...")
-    validated_leaks = {**extracted_data}  # Copy extracted data
+        # Step 2: Extract Data
+        extracted_data = extract_leaks_from_html(soup)
+        if not extracted_data:
+            raise HTTPException(status_code=500, detail="Leak extraction failed.")
 
-    for ip in extracted_data["ip_addresses"]:
-        result = check_virustotal(ip)
-        validated_leaks[ip] = "Malicious" if result else "Clean"
+        # Step 3: Validate IOCs
+        ioc_status = {}
+        for ip in extracted_data.get("ip_addresses", []):
+            try:
+                ioc_status[ip] = "Malicious" if check_virustotal(ip) else "Clean"
+            except Exception:
+                ioc_status[ip] = "Error during validation"
 
-    # Save validated IOCs
-    with open("validated_leaks.json", "w", encoding="utf-8") as json_file:
-        json.dump(validated_leaks, json_file, indent=4)
-    print("[INFO] IOC validation completed.")
+        # Step 4: Enrich IOCs
+        enriched_data = {}
+        for ip in extracted_data.get("ip_addresses", []):
+            try:
+                enriched_data[ip] = enrich_ioc(ip)
+            except Exception:
+                enriched_data[ip] = {"error": "Enrichment failed"}
 
-    # Step 4: Map Threats to MITRE ATT&CK
-    print("\n⚠️ Mapping threats to MITRE ATT&CK...")
-    mapped_threats = classify_threats(validated_leaks)
+        # Step 5: Map Threats to MITRE ATT&CK
+        mitre_mapping = classify_threats(ioc_status)
 
-    with open("threat_mapping.json", "w", encoding="utf-8") as json_file:
-        json.dump(mapped_threats, json_file, indent=4)
-    print("[INFO] Threat mapping saved.")
+        # Step 6: Generate Report (optional)
+        try:
+            generate_report()
+        except Exception:
+            pass  # You might want to log this error in a real system
 
-    # Step 5: Generate Final Threat Report
-    print("\n📜 Generating final threat report...")
-    generate_report()
+        # Step 7: Return structured summary
+        return {
+            "message": "Analysis complete",
+            "summary": {
+                "leaks_found": extracted_data,
+                "ioc_status": ioc_status,
+                "ioc_enrichment": enriched_data,
+                "threat_mapping": mitre_mapping
+            }
+        }
 
-    print("\n✅ All tasks completed successfully! Check `final_report.json`.")
-
-if __name__ == "__main__":
-    main()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
