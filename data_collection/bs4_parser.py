@@ -1,30 +1,32 @@
-import re
-import json
 from bs4 import BeautifulSoup
+import re
 
-def extract_leaks_from_html(html_file):
-    """
-    Extracts potential leaks (emails, credentials, IPs, domains, credit card numbers) from HTML.
-    """
-    with open(html_file, "r", encoding="utf-8") as file:
-        soup = BeautifulSoup(file, "html.parser")
-        text_content = soup.get_text(separator="\n")  # Convert HTML to text
+def extract_leaks_from_html(html_path):
+    with open(html_path, "r", encoding="utf-8") as f:
+        soup = BeautifulSoup(f, "html.parser")
 
-    leaks = {
-        "emails": re.findall(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", text_content),
-        "credentials": re.findall(r"\b[a-zA-Z0-9._%+-]+:[a-zA-Z0-9!@#$%^&*()_+=-]{6,}\b", text_content),  # Fix regex
-        "ip_addresses": re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", text_content),
-        "domains": re.findall(r"\b[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b", text_content),
-        "credit_cards": re.findall(r"\b(?:\d[ -]*?){13,16}\b", text_content)
+    text = soup.get_text()
+
+    emails = re.findall(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+", text)
+    ips = re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", text)
+    domains = re.findall(r"\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b", text)
+    credit_cards = re.findall(r"\b(?:\d[ -]*?){13,16}\b", text)
+    credentials = re.findall(r"([a-zA-Z0-9_.+-]+):([^\s]+)", text)
+
+    return {
+        "summary": {
+            "total_emails": len(emails),
+            "total_credentials": len(credentials),
+            "total_ips": len(ips),
+            "total_domains": len(domains),
+            "total_credit_cards": len(credit_cards),
+        },
+        "threats": {},
+        "leaks": {
+            "emails": emails,
+            "credentials": credentials,
+            "ip_addresses": ips,
+            "domains": domains,
+            "credit_cards": credit_cards
+        }
     }
-
-    return leaks
-
-if __name__ == "__main__":
-    extracted_data = extract_leaks_from_html("scraped_page.html")
-
-    # Save extracted data to a JSON file
-    with open("extracted_leaks.json", "w", encoding="utf-8") as json_file:
-        json.dump(extracted_data, json_file, indent=4)
-
-    print("\n✅ Data leaks extracted and saved to `extracted_leaks.json`")

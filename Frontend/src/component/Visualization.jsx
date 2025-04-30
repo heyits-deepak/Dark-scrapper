@@ -34,7 +34,7 @@ const SummaryBarChart = ({ jsonData, options, refresh }) => {
         datasets: [
             {
                 label: "Total Leaks",
-                data: Object.values(jsonData.summary),
+                data: Object.values(jsonData?.summary),
                 backgroundColor: [
                     "rgba(17, 93, 119, 0.8)",  // Deep Teal
                     "rgba(17, 119, 107, 0.8)", // Greenish Teal
@@ -65,8 +65,8 @@ const SummaryBarChart = ({ jsonData, options, refresh }) => {
 };
 
 const ThreatsPieChart = ({ jsonData, options, refresh }) => {
-    const threatsCount = Object.keys(jsonData.threats).length;
-    const safeCount = jsonData.summary.total_domains - threatsCount;
+    const threatsCount = Object.keys(jsonData?.threats)?.length;
+    const safeCount = jsonData?.summary?.total_domains - threatsCount;
 
     const data = {
         labels: ["Threat Domains", "Safe Domains"],
@@ -101,11 +101,11 @@ const LeaksRadarChart = ({ jsonData, options, refresh }) => {
             {
                 label: "Leaks",
                 data: [
-                    jsonData.leaks.emails.length,
-                    jsonData.leaks.credentials.length,
-                    jsonData.leaks.ip_addresses.length,
-                    jsonData.leaks.domains.length,
-                    jsonData.leaks.credit_cards.length
+                    jsonData?.leaks?.emails.length,
+                    jsonData?.leaks?.credentials?.length,
+                    jsonData?.leaks?.ip_addresses?.length,
+                    jsonData?.leaks?.domains?.length,
+                    jsonData?.leaks?.credit_cards?.length
                 ],
                 backgroundColor: "rgba(64, 224, 208, 0.3)", // Transparent Turquoise
                 borderColor: "rgba(17, 93, 119, 1)", // Deep Teal
@@ -129,7 +129,7 @@ const ThreatBubbleChart = ({ jsonData, options, refresh }) => {
         datasets: [
             {
                 label: "Threats",
-                data: Object.keys(jsonData.threats).map((domain, index) => ({
+                data: Object.keys(jsonData?.threats).map((domain, index) => ({
                     x: index,
                     y: 1,
                     r: 10

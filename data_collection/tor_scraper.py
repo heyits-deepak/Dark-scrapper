@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 # Load environment variables from `.env`
 load_dotenv()
-TOR_PASSWORD = os.getenv("Your_pass")
+TOR_PASSWORD = os.getenv("hashed@02")
 
 # Function to rotate TOR IP
 def renew_connection():
@@ -47,7 +47,7 @@ def scrape(url):
 
 # Main Execution
 if __name__ == "__main__":
-    onion_url = "http://tortaxiprd6ybez7n7fnwwmcdo3efib5hv6z7ks463ya72bv7ovz7qqd.onion/journal.html"  # Replace with actual .onion site
+    onion_url = "http://gothamfx7mzje64oqli3axof2fguuanladv6fvkhnqs4kngeosei7kad.onion/category/5tnykpQMSYBj5uNo"  # Replace with actual .onion site
 
     # Rotate TOR IP before making a request
     renew_connection()
