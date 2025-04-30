@@ -1,0 +1,22 @@
+# Byte-compiled / optimized
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+
+# dotenv files
+*.env
+
+# Build artifacts / archives
+*.tar.gz
+*.zip
+
+# Output files you don’t want in Git
+*.json
+*.html
+
+# VSCode workspace settings
+.vscode/
